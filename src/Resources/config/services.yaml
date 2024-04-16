@@ -33,4 +33,5 @@ services:
       - { name: kernel.event_listener, event: kernel.response }
     arguments:
       $inertia: '@rompetomp_inertia.inertia'
+      $csrfTokenManager: '@security.csrf.token_manager'
       $debug: '%kernel.debug%'
