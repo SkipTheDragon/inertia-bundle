@@ -1,13 +1,15 @@
 ## Installation
 First, make sure you have the twig, encore and serializer recipe:
+
 ```console
-composer require twig encore symfony/serializer-pack
+composer require twig symfony/serializer-pack
 ```
 
 Install using Composer:
 ```console
 composer require skipthedragon/inertia-bundle
 ```
+
 ```console
 yarn add @inertiajs/inertia
 ```

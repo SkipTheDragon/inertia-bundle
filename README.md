@@ -23,6 +23,7 @@ composer require skipthedragon/inertia-bundle
     - [Svelte](docs/encore_config_examples/svelte.md)
 - [Usage](docs/usage.md)
 - [Server-side rendering](docs/ssr.md)
+- [CSRF](docs/csrf.md)
 - [Contributing](docs/contributing.md)
 
 ## Support
