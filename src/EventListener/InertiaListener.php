@@ -3,9 +3,12 @@
 namespace Rompetomp\InertiaBundle\EventListener;
 
 use Rompetomp\InertiaBundle\Architecture\InertiaInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 /**
  * Class InertiaListener.
@@ -13,14 +16,14 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 class InertiaListener
 {
 
-    protected InertiaInterface $inertia;
+    protected string $inertiaCsrfTokenName = 'X-Inertia-CSRF-TOKEN';
 
-    protected bool $debug;
-
-    public function __construct(InertiaInterface $inertia, bool $debug)
+    public function __construct(
+        protected InertiaInterface $inertia,
+        protected CsrfTokenManagerInterface $csrfTokenManager,
+        protected bool $debug
+    )
     {
-        $this->inertia = $inertia;
-        $this->debug = $debug;
     }
 
     public function onKernelRequest(RequestEvent $event): void
@@ -30,10 +33,22 @@ class InertiaListener
             return;
         }
 
+        // Validate CSRF token:
+        $csrfToken = $request->headers->get('X-XSRF-TOKEN');
+
+        if (!$this->csrfTokenManager->isTokenValid(new CsrfToken($this->inertiaCsrfTokenName, $csrfToken))) {
+            $event->setResponse(new Response('Invalid CSRF token.', 403));
+            return;
+        }
+
         if ('GET' === $request->getMethod()
             && $request->headers->get('X-Inertia-Version') !== $this->inertia->getVersion()
         ) {
             $response = new Response('', 409, ['X-Inertia-Location' => $request->getUri()]);
+
+            // Add CSRF token to Inertia requests
+            $response->headers->setCookie(new Cookie('XSRF-TOKEN', $this->csrfTokenManager->refreshToken($this->inertiaCsrfTokenName), 0, '/', null, false, true));
+
             $event->setResponse($response);
         }
     }
