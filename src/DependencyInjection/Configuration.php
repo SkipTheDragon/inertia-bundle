@@ -2,7 +2,6 @@
 
 namespace Rompetomp\InertiaBundle\DependencyInjection;
 
-use Rompetomp\InertiaBundle\Architecture\DefaultInertiaErrorResponse;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -38,7 +37,6 @@ class Configuration implements ConfigurationInterface
                     ->addDefaultsIfNotSet()
                     ->children()
                         ->booleanNode('enabled')->defaultTrue()->end()
-                        ->scalarNode('response_class')->defaultValue(DefaultInertiaErrorResponse::class)->end()
                         ->scalarNode('cookie_name')->defaultValue('XSRF-TOKEN')->end()
                         ->scalarNode('header_name')->defaultValue('X-XSRF-TOKEN')->end()
                         ->scalarNode('expire')->defaultValue(0)->end()
