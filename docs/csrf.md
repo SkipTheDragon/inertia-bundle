@@ -37,21 +37,20 @@ inertia:
 
 ### Custom Error Message
 
-You can customize the response in case of a CSRF token mismatch. To do this, you must create a new overwriting
-the `@rompetomp_inertia.inertia_error_response` service inside your `config/services.yaml` file. Your custom service
-must implement the `InertiaErrorResponseInterface` interface.
-
+You can customize the response in case of a CSRF token mismatch. To do this, you must create a new service
+and overwrite the `@rompetomp_inertia.inertia_error_response` service inside your `config/services.yaml` file. Your
+custom service must implement the `InertiaErrorResponseInterface` interface.
 
 #### The configuration should look like this:
 
 ```yaml
 services:
-  
+
   # The rest of your services here.....
-  
+
   # Your custom service
   rompetomp_inertia.inertia_error_response:
-    class:  App\Controller\MyCustomInertiaErrorResponse
+    class: App\Service\MyCustomInertiaErrorResponse
 
 ```
 
@@ -59,7 +58,7 @@ services:
 
 ```php
 
-namespace App\Controller; # Your namespace, it's not mandatory to be in a controller.
+namespace App\Service;
 
 use Symfony\Component\HttpFoundation\Response;
 
