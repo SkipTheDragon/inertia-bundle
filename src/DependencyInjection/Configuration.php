@@ -2,6 +2,7 @@
 
 namespace Rompetomp\InertiaBundle\DependencyInjection;
 
+use Rompetomp\InertiaBundle\Architecture\DefaultInertiaErrorResponse;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -9,6 +10,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  * Class Configuration.
  *
  * @author  Hannes Vermeire <hannes@codedor.be>
+ * @author  Tudorache Leonard Valentin <tudorache.leonard@wyverr.com>
  *
  * @since   2019-08-02
  */
@@ -32,6 +34,20 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('url')->defaultValue('')->end()
                     ->end()
                 ->end()
+                ->arrayNode('csrf')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('enabled')->defaultTrue()->end()
+                        ->scalarNode('response_class')->defaultValue(DefaultInertiaErrorResponse::class)->end()
+                        ->scalarNode('cookie_name')->defaultValue('XSRF-TOKEN')->end()
+                        ->scalarNode('header_name')->defaultValue('X-XSRF-TOKEN')->end()
+                        ->scalarNode('expire')->defaultValue(0)->end()
+                        ->scalarNode('path')->defaultValue('/')->end()
+                        ->scalarNode('domain')->defaultValue(null)->end()
+                        ->scalarNode('secure')->defaultValue(false)->end()
+                        ->scalarNode('raw')->defaultValue(false)->end()
+                        ->scalarNode('samesite')->defaultValue('lax')->end()
+                    ->end()
             ->end();
 
         return $treeBuilder;

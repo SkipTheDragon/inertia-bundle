@@ -2,7 +2,9 @@
 
 namespace Rompetomp\InertiaBundle\EventListener;
 
+use Rompetomp\InertiaBundle\Architecture\DefaultInertiaErrorResponseInterface;
 use Rompetomp\InertiaBundle\Architecture\InertiaInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -19,9 +21,11 @@ class InertiaListener
     protected string $inertiaCsrfTokenName = 'X-Inertia-CSRF-TOKEN';
 
     public function __construct(
-        protected InertiaInterface $inertia,
-        protected CsrfTokenManagerInterface $csrfTokenManager,
-        protected bool $debug
+        protected InertiaInterface                     $inertia,
+        protected CsrfTokenManagerInterface            $csrfTokenManager,
+        protected bool                                 $debug,
+        protected ContainerInterface                   $container,
+        protected DefaultInertiaErrorResponseInterface $defaultInertiaErrorResponse
     )
     {
     }
@@ -34,11 +38,13 @@ class InertiaListener
         }
 
         // Validate CSRF token:
-        $csrfToken = $request->headers->get('X-XSRF-TOKEN');
+        if ($this->container->getParameter('inertia.csrf.enabled')) {
+            $csrfToken = $request->headers->get($this->container->getParameter('inertia.csrf.header_name'));
 
-        if (!$this->csrfTokenManager->isTokenValid(new CsrfToken($this->inertiaCsrfTokenName, $csrfToken))) {
-            $event->setResponse(new Response('Invalid CSRF token.', 403));
-            return;
+            if (!$this->csrfTokenManager->isTokenValid(new CsrfToken($this->inertiaCsrfTokenName, $csrfToken))) {
+                $event->setResponse($this->defaultInertiaErrorResponse->getResponse());
+                return;
+            }
         }
 
         if ('GET' === $request->getMethod()
@@ -46,15 +52,29 @@ class InertiaListener
         ) {
             $response = new Response('', 409, ['X-Inertia-Location' => $request->getUri()]);
 
-            // Add CSRF token to Inertia requests
-            $response->headers->setCookie(new Cookie('XSRF-TOKEN', $this->csrfTokenManager->refreshToken($this->inertiaCsrfTokenName), 0, '/', null, false, true));
-
             $event->setResponse($response);
         }
     }
 
     public function onKernelResponse(ResponseEvent $event): void
     {
+        // Add the CSRF token on any response
+        if ($this->container->getParameter('inertia.csrf.enabled')) {
+            $event->getResponse()->headers->setCookie(
+                new Cookie(
+                    $this->container->getParameter('inertia.csrf.cookie_name'),
+                    $this->csrfTokenManager->refreshToken($this->inertiaCsrfTokenName),
+                    $this->container->getParameter('inertia.csrf.expire'),
+                    $this->container->getParameter('inertia.csrf.path'),
+                    $this->container->getParameter('inertia.csrf.domain'),
+                    $this->container->getParameter('inertia.csrf.secure'),
+                    false,
+                    $this->container->getParameter('inertia.csrf.raw'),
+                    $this->container->getParameter('inertia.csrf.samesite')
+                )
+            );
+        }
+
         if (!$event->getRequest()->headers->get('X-Inertia')) {
             return;
         }
