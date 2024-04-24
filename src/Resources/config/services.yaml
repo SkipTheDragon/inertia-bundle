@@ -41,3 +41,9 @@ services:
       $debug: '%kernel.debug%'
       $container: '@service_container'
       $defaultInertiaErrorResponse: '@rompetomp_inertia.inertia_error_response'
+
+  Rompetomp\InertiaBundle\EventListener\InertiaResponseAttributeListener:
+    tags:
+      - { name: kernel.event_listener, event: kernel.view }
+    arguments:
+      $inertia: '@rompetomp_inertia.inertia'

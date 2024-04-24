@@ -184,7 +184,7 @@ class InertiaService implements InertiaInterface
         return $response;
     }
 
-    public function location($url): Response
+    public function location(string|RedirectResponse $url): Response
     {
         $request = $this->requestStack->getCurrentRequest();
 
