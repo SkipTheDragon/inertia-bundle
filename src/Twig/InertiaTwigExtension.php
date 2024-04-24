@@ -2,6 +2,7 @@
 
 namespace Rompetomp\InertiaBundle\Twig;
 
+use Closure;
 use Rompetomp\InertiaBundle\Architecture\GatewayInterface;
 use Rompetomp\InertiaBundle\Architecture\InertiaInterface;
 use Rompetomp\InertiaBundle\Ssr\InertiaSsrResponse;
@@ -10,7 +11,7 @@ use Twig\Markup;
 use Twig\TwigFunction;
 
 /**
- * Class InertiaTwigExtension.
+ * Registers the required functions for the Inertia Twig Extension.
  *
  * @author  Hannes Vermeire <hannes@codedor.be>
  *
@@ -25,14 +26,24 @@ class InertiaTwigExtension extends AbstractExtension
     {
     }
 
+    /**
+     * Register the functions.
+     * @return TwigFunction[]
+     */
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('inertia', [$this, 'inertiaFunction']),
-            new TwigFunction('inertiaHead', [$this, 'inertiaHeadFunction']),
+            new TwigFunction('inertia', Closure::fromCallable([$this, 'inertiaFunction'])),
+            new TwigFunction('inertiaHead', Closure::fromCallable([$this, 'inertiaFunction'])),
         ];
     }
 
+    /**
+     * The inertia function that renders the div with the id app and the data-page attribute.
+     *
+     * @param $page
+     * @return Markup
+     */
     public function inertiaFunction($page): Markup
     {
         if ($this->inertia->isSsr()) {
@@ -45,6 +56,10 @@ class InertiaTwigExtension extends AbstractExtension
         return new Markup('<div id="app" data-page="' . htmlspecialchars(json_encode($page)) . '"></div>', 'UTF-8');
     }
 
+    /**
+     * @param $page
+     * @return Markup
+     */
     public function inertiaHeadFunction($page): Markup
     {
         if ($this->inertia->isSsr()) {
