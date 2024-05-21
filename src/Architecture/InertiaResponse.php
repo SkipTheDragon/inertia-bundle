@@ -23,26 +23,26 @@ class InertiaResponse
         /**
          * The name of the component to render.
          */
-        string $component,
+        public string  $component,
 
         /**
          * The controller method arguments to pass to the template.
          * Extra to the already returned array from the initial controller function.
          */
-        array  $props = [],
+        public array   $props = [],
         /**
          * The view data to pass to the twig template.
          */
-        array  $viewData = [],
+        public array   $viewData = [],
         /**
          * The context to pass to the serializer.
          */
-        array  $context = [],
+        public array   $context = [],
 
         /**
          * Location to redirect to.
          */
-        string $url = null
+        public ?string $url = null
     )
     {
     }
