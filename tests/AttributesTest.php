@@ -45,6 +45,6 @@ class AttributesTest extends InertiaBaseConfig
         );
 
         $listener->onKernelView($event);
-        $this->assertEquals('{"component":"Index","props":[],"url":"","version":null}', $event->getResponse()->getContent());
+        $this->assertEquals('{"component":"Index","props":[],"url":null,"version":null}', $event->getResponse()->getContent());
     }
 }
