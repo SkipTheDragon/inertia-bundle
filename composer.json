@@ -15,6 +15,12 @@
       "email": "tudorache.leonard@wyverr.com"
     }
   ],
+  "autoload-dev": {
+    "psr-4": {
+      "Rompetomp\\InertiaBundle\\Tests\\": "tests/",
+      "Rompetomp\\InertiaBundle\\Tests\\Fixtures\\": "tests/fixtures/"
+    }
+  },
   "autoload": {
     "psr-4": {
       "Rompetomp\\InertiaBundle\\": "src/"
