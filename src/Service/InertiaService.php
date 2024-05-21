@@ -153,6 +153,10 @@ class InertiaService implements InertiaInterface
         $request = $this->requestStack->getCurrentRequest();
         $url = $url ?? $request->getRequestUri();
 
+        if ($url === '') {
+            $url = null;
+        }
+
         $only = array_filter(explode(',', $request->headers->get('X-Inertia-Partial-Data') ?? ''));
         $props = ($only && $request->headers->get('X-Inertia-Partial-Component') === $component)
             ? self::array_only($props, $only)
