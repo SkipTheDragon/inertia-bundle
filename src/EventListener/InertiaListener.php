@@ -13,11 +13,13 @@ use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 /**
- * Class InertiaListener.
+ * The listener that processes a request to determine if it is an Inertia request and modifies the response accordingly.
  */
 class InertiaListener
 {
-
+    /**
+     * @var string The name of the CSRF token used to validate requests.
+     */
     protected string $inertiaCsrfTokenName = 'X-Inertia-CSRF-TOKEN';
 
     public function __construct(
@@ -30,14 +32,22 @@ class InertiaListener
     {
     }
 
+    /**
+     * @param RequestEvent $event
+     * @return void
+     */
     public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
+
+        /**
+         * If the request is not an Inertia request, we don't need to do anything.
+         */
         if (!$request->headers->get('X-Inertia')) {
             return;
         }
 
-        // Validate CSRF token:
+        // Validate CSRF token
         if ($this->container->getParameter('inertia.csrf.enabled')) {
             $csrfToken = $request->headers->get($this->container->getParameter('inertia.csrf.header_name'));
 
@@ -47,18 +57,28 @@ class InertiaListener
             }
         }
 
+        /**
+         * Tell Inertia to update the page if the version has changed.
+         */
         if ('GET' === $request->getMethod()
             && $request->headers->get('X-Inertia-Version') !== $this->inertia->getVersion()
         ) {
-            $response = new Response('', 409, ['X-Inertia-Location' => $request->getUri()]);
+            $response = new Response('', Response::HTTP_CONFLICT, ['X-Inertia-Location' => $request->getUri()]);
 
             $event->setResponse($response);
         }
     }
 
+    /**
+     * @param ResponseEvent $event
+     * @return void
+     */
     public function onKernelResponse(ResponseEvent $event): void
     {
-        // Add the CSRF token on any response
+        /**
+         * If the CSRF protection is enabled, we need to refresh the CSRF token.
+         * We add this cookie to any request, not just Inertia requests.
+         */
         if ($this->container->getParameter('inertia.csrf.enabled')) {
             $event->getResponse()->headers->setCookie(
                 new Cookie(
@@ -75,19 +95,28 @@ class InertiaListener
             );
         }
 
+        /**
+         * If the request is not an Inertia request, we don't need to do anything.
+         */
         if (!$event->getRequest()->headers->get('X-Inertia')) {
             return;
         }
 
+        /**
+         * Refreshes the toolbar when the request is an AJAX request.
+         */
         if ($this->debug && $event->getRequest()->isXmlHttpRequest()) {
             $event->getResponse()->headers->set('Symfony-Debug-Toolbar-Replace', 1);
         }
 
+        /**
+         * If the response is a redirect and the request method is PUT, PATCH, or DELETE, we need to change the status code to 303.
+         */
         if ($event->getResponse()->isRedirect()
-            && 302 === $event->getResponse()->getStatusCode()
+            && Response::HTTP_FOUND === $event->getResponse()->getStatusCode()
             && in_array($event->getRequest()->getMethod(), ['PUT', 'PATCH', 'DELETE'])
         ) {
-            $event->getResponse()->setStatusCode(303);
+            $event->getResponse()->setStatusCode(Response::HTTP_SEE_OTHER);
         }
     }
 }

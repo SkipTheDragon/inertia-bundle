@@ -27,6 +27,9 @@ class InertiaExtension extends ConfigurableExtension
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yaml');
 
+        /**
+         * Example: inertia.csrf.enabled
+         */
         foreach (self::transformKeys($mergedConfig) as $key => $value) {
             $container->setParameter('inertia.' . $key, $value);
         }
