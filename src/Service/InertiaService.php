@@ -141,7 +141,7 @@ class InertiaService implements InertiaInterface
      * @throws RuntimeError
      * @throws LoaderError
      */
-    public function render(string $component, array $props = [], array $viewData = [], array $context = [], string $url = null): Response
+    public function render(string $component, array $props = [], array $viewData = [], array $context = [], ?string $url = null): Response
     {
         if ($this->rootView === null) {
             throw new RuntimeError('The root view is not set. Inertia bundle requires a root view to render the page, set one globally in config/packages/inertia.yaml or pass it to the render method.');

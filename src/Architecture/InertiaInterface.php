@@ -95,5 +95,5 @@ interface InertiaInterface
      * @param array $context   serialization context
      * @param string|null $url       custom url
      */
-    public function render(string $component, array $props = [], array $viewData = [], array $context = [], string $url = null): Response;
+    public function render(string $component, array $props = [], array $viewData = [], array $context = [], ?string $url = null): Response;
 }
