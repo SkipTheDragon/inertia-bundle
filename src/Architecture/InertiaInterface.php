@@ -2,6 +2,7 @@
 
 namespace Rompetomp\InertiaBundle\Architecture;
 
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Error\LoaderError;
@@ -143,10 +144,11 @@ interface InertiaInterface
      * @param array $viewData The view data to pass to the root view (ak. your twig template).
      * @param array $context The context to pass to the serializer.
      * @param string|null $url The URL to pass to the page.
+     * @param array<FormInterface>|null $forms
      * @return Response
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function render(string $component, array $props = [], array $viewData = [], array $context = [], ?string $url = null): Response;
+    public function render(string $component, array $props = [], array $viewData = [], array $context = [], ?string $url = null, ?array $forms = []): Response;
 }

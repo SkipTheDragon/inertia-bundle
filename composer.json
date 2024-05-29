@@ -34,6 +34,7 @@
     "ext-json": "*",
     "symfony/config": "^5.1.7|^6.0|^7.0",
     "symfony/dependency-injection": "^5.1.7|^6.0|^7.0",
+    "symfony/form": "^5.1.7|^6.0|^7.0",
     "symfony/http-kernel": "^5.1.7|^6.0|^7.0",
     "symfony/twig-bundle": "^5.1.7|^6.0|^7.0",
     "symfony/serializer-pack": "^v1.3.0",
