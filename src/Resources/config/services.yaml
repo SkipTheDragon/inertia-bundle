@@ -11,7 +11,7 @@ services:
   Rompetomp\InertiaBundle\Architecture\InertiaInterface: '@rompetomp_inertia.inertia'
 
   rompetomp_inertia.inertia_error_response:
-    class:  Rompetomp\InertiaBundle\Architecture\DefaultInertiaErrorResponse
+    class: Rompetomp\InertiaBundle\Architecture\DefaultInertiaErrorResponse
     public: false
 
   rompetomp_inertia.gateway:

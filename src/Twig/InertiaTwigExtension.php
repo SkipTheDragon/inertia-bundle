@@ -22,8 +22,7 @@ class InertiaTwigExtension extends AbstractExtension
     public function __construct(
         private InertiaInterface $inertia,
         private GatewayInterface $gateway
-    )
-    {
+    ) {
     }
 
     /**
@@ -33,8 +32,14 @@ class InertiaTwigExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('inertia', Closure::fromCallable([$this, 'inertiaFunction'])),
-            new TwigFunction('inertiaHead', Closure::fromCallable([$this, 'inertiaFunction'])),
+            new TwigFunction(
+                'inertia',
+                Closure::fromCallable([$this, 'inertiaFunction'])
+            ),
+            new TwigFunction(
+                'inertiaHead',
+                Closure::fromCallable([$this, 'inertiaFunction'])
+            ),
         ];
     }
 
@@ -53,7 +58,12 @@ class InertiaTwigExtension extends AbstractExtension
             }
         }
 
-        return new Markup('<div id="app" data-page="' . htmlspecialchars(json_encode($page)) . '"></div>', 'UTF-8');
+        return new Markup(
+            '<div id="app" data-page="' .
+                htmlspecialchars(json_encode($page)) .
+                '"></div>',
+            'UTF-8'
+        );
     }
 
     /**

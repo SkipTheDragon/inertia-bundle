@@ -9,10 +9,14 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @author  Tudorache Leonard Valentin <tudorache.leonard@wyverr.com>
  */
-final class DefaultInertiaErrorResponse implements DefaultInertiaErrorResponseInterface
+final class DefaultInertiaErrorResponse implements
+    DefaultInertiaErrorResponseInterface
 {
     public function getResponse(): Response
     {
-        return new Response('Something went wrong with Inertia!', Response::HTTP_FORBIDDEN);
+        return new Response(
+            'Something went wrong with Inertia!',
+            Response::HTTP_FORBIDDEN
+        );
     }
 }

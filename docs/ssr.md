@@ -18,30 +18,30 @@ touch webpack.ssr.mix.js
 ```
 
 Here is an example file for `webpack.ssr.config.js`
+
 ```js
-const Encore = require('@symfony/webpack-encore')
-const webpackNodeExternals = require('webpack-node-externals')
-const path = require('path')
+const Encore = require('@symfony/webpack-encore');
+const webpackNodeExternals = require('webpack-node-externals');
+const path = require('path');
 
 if (!Encore.isRuntimeEnvironmentConfigured()) {
-    Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev')
+  Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
 }
 
-Encore
-    .setOutputPath('public/build-ssr/')
-    .setPublicPath('/build-ssr')
-    .enableVueLoader(() => {}, { version: 3 })
-    .addEntry('ssr', './assets/ssr.js')
-    .cleanupOutputBeforeBuild()
-    .enableSourceMaps(!Encore.isProduction())
-    .enableVersioning(Encore.isProduction())
-    .enableSassLoader()
+Encore.setOutputPath('public/build-ssr/')
+  .setPublicPath('/build-ssr')
+  .enableVueLoader(() => {}, { version: 3 })
+  .addEntry('ssr', './assets/ssr.js')
+  .cleanupOutputBeforeBuild()
+  .enableSourceMaps(!Encore.isProduction())
+  .enableVersioning(Encore.isProduction())
+  .enableSassLoader();
 
 const config = Encore.getWebpackConfig();
 config.target = 'node';
 config.externals = [webpackNodeExternals()];
 
-module.exports = config
+module.exports = config;
 ```
 
 ### Enabling SSR

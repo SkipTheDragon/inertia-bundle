@@ -16,7 +16,6 @@ your `config/packages/inertia.yaml` file.
 
 ```yaml
 inertia:
-
   # The rest of your configuration here.....
 
   csrf:
@@ -45,19 +44,16 @@ custom service must implement the `InertiaErrorResponseInterface` interface.
 
 ```yaml
 services:
-
   # The rest of your services here.....
 
   # Your custom service
   rompetomp_inertia.inertia_error_response:
     class: App\Service\MyCustomInertiaErrorResponse
-
 ```
 
 #### The contents of your service should look like this:
 
 ```php
-
 namespace App\Service;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -65,11 +61,12 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @author  Tudorache Leonard Valentin <tudorache.leonard@wyverr.com>
  */
-final class MyCustomInertiaErrorResponse implements DefaultInertiaErrorResponseInterface
+final class MyCustomInertiaErrorResponse implements
+  DefaultInertiaErrorResponseInterface
 {
-    public function getResponse(): Response
-    {
-        return new Response('Something went wrong with Inertia!', 403);
-    }
+  public function getResponse(): Response
+  {
+    return new Response('Something went wrong with Inertia!', 403);
+  }
 }
 ```

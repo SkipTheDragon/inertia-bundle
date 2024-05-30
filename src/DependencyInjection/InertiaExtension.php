@@ -22,9 +22,14 @@ class InertiaExtension extends ConfigurableExtension
      *
      * @throws Exception
      */
-    protected function loadInternal(array $mergedConfig, ContainerBuilder $container): void
-    {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+    protected function loadInternal(
+        array $mergedConfig,
+        ContainerBuilder $container
+    ): void {
+        $loader = new YamlFileLoader(
+            $container,
+            new FileLocator(__DIR__ . '/../Resources/config')
+        );
         $loader->load('services.yaml');
 
         /**
@@ -43,10 +48,10 @@ class InertiaExtension extends ConfigurableExtension
      */
     private function transformKeys(array $array, string $parentKey = ''): array
     {
-        $result = array();
+        $result = [];
 
         foreach ($array as $key => $value) {
-            $newKey = ($parentKey !== '') ? $parentKey . '.' . $key : $key;
+            $newKey = $parentKey !== '' ? $parentKey . '.' . $key : $key;
 
             if (is_array($value)) {
                 $result += self::transformKeys($value, $newKey);

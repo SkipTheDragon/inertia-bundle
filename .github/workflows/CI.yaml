@@ -3,30 +3,30 @@ name: CI
 on: [push, pull_request]
 
 env:
-    fail-fast: false
+  fail-fast: false
 
 jobs:
-    tests:
-        runs-on: ubuntu-latest
+  tests:
+    runs-on: ubuntu-latest
 
-        strategy:
-            matrix:
-                php-versions: ['8.0', '8.2']
+    strategy:
+      matrix:
+        php-versions: ['8.0', '8.2']
 
-        name: Tests on PHP ${{ matrix.php-versions }}
+    name: Tests on PHP ${{ matrix.php-versions }}
 
-        steps:
-            -   name: Checkout
-                uses: actions/checkout@v2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-            -   name: Setup PHP
-                uses: shivammathur/setup-php@v2
-                with:
-                    php-version: ${{ matrix.php-versions }}
-                    coverage: none
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          coverage: none
 
-            -   name: Install dependencies
-                run: composer install --ansi --no-progress
+      - name: Install dependencies
+        run: composer install --ansi --no-progress
 
-            -   name: PHPUnit Tests
-                run: vendor/bin/simple-phpunit
+      - name: PHPUnit Tests
+        run: vendor/bin/simple-phpunit

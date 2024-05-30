@@ -4,22 +4,18 @@ The first step to using Inertia is creating a root template. We recommend using 
 include your assets, as well as the `inertia(page)` and `inertiaHead(page)` functions
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Inertia powered page</title>
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
-        {{ inertiaHead(page) }}
-    </head>
-    <body>
-    {{ inertia(page) }}
-    {% block javascripts %}
-        {{ encore_entry_script_tags('app') }}
-    {% endblock %}
-    </body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Inertia powered page</title>
+    {% block stylesheets %} {{ encore_entry_link_tags('app') }} {% endblock %}
+    {{ inertiaHead(page) }}
+  </head>
+  <body>
+    {{ inertia(page) }} {% block javascripts %} {{
+    encore_entry_script_tags('app') }} {% endblock %}
+  </body>
 </html>
 ```
 
@@ -27,8 +23,10 @@ The `inertia(page)` function is a helper function for creating our base `div`. I
 contains the initial page information. This is what it looks like:
 
 ```html
-
-<div id="app" data-page="<?php echo htmlspecialchars(json_encode($page)); ?>"></div>
+<div
+  id="app"
+  data-page="<?php echo htmlspecialchars(json_encode($page)); ?>"
+></div>
 ```
 
 If you'd like a different root view, you can change it by creating a `config/packages/inertia.yaml` file
@@ -53,4 +51,3 @@ Some config examples:
 - [Svelte](./encore_config_examples/svelte.md)
 
 ## Continue with [usage](usage.md) section.
-

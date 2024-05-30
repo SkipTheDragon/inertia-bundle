@@ -7,7 +7,13 @@ namespace Rompetomp\InertiaBundle\Architecture;
  *
  * @author  Tudorache Leonard Valentin <tudorache.leonard@wyverr.com>
  */
-#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::TARGET_FUNCTION)]
+#[
+    \Attribute(
+        \Attribute::TARGET_CLASS |
+            \Attribute::TARGET_METHOD |
+            \Attribute::TARGET_FUNCTION
+    )
+]
 class InertiaResponse
 {
     /**
@@ -23,27 +29,26 @@ class InertiaResponse
         /**
          * The name of the component to render.
          */
-        public string  $component,
+        public string $component,
 
         /**
          * The controller method arguments to pass to the template.
          * Extra to the already returned array from the initial controller function.
          */
-        public array   $props = [],
+        public array $props = [],
         /**
          * The view data to pass to the twig template.
          */
-        public array   $viewData = [],
+        public array $viewData = [],
         /**
          * The context to pass to the serializer.
          */
-        public array   $context = [],
+        public array $context = [],
 
         /**
          * Location to redirect to.
          */
         public ?string $url = null
-    )
-    {
+    ) {
     }
 }

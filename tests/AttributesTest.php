@@ -16,24 +16,40 @@ class AttributesTest extends InertiaBaseConfig
     protected array $inertiaConfig = [
         'root_view' => 'base.twig.html',
         'ssr' => ['enabled' => false, 'url' => 'http://localhost:3000'],
-        'csrf' => ['enabled' => false] // disable csrf
+        'csrf' => ['enabled' => false], // disable csrf
     ];
 
     public function testAttributeOnController()
     {
         $mockRequest = \Mockery::mock(Request::class);
-        $mockRequest->shouldReceive('getRequestUri')->andSet('headers', new HeaderBag(['X-Inertia' => true]));
-        $mockRequest->allows()->getRequestUri()->andReturns('https://example.test');
-        $this->requestStack->allows()->getCurrentRequest()->andReturns($mockRequest);
+        $mockRequest
+            ->shouldReceive('getRequestUri')
+            ->andSet('headers', new HeaderBag(['X-Inertia' => true]));
+        $mockRequest
+            ->allows()
+            ->getRequestUri()
+            ->andReturns('https://example.test');
+        $this->requestStack
+            ->allows()
+            ->getCurrentRequest()
+            ->andReturns($mockRequest);
 
         $listener = new InertiaResponseAttributeListener(
-            new InertiaService($this->environment, $this->requestStack, $this->container, $this->serializer),
+            new InertiaService(
+                $this->environment,
+                $this->requestStack,
+                $this->container,
+                $this->serializer
+            )
         );
 
         $request = Request::create('http://localhost/');
         $request->headers->set('X-Inertia', true);
         $request->setMethod(Request::METHOD_GET);
-        $request->attributes->set('_template', new InertiaResponse(component: 'Index'));
+        $request->attributes->set(
+            '_template',
+            new InertiaResponse(component: 'Index')
+        );
 
         $kernelInterface = $this->createMock(HttpKernelInterface::class);
 
@@ -45,6 +61,9 @@ class AttributesTest extends InertiaBaseConfig
         );
 
         $listener->onKernelView($event);
-        $this->assertEquals('{"component":"Index","props":[],"url":null,"version":null}', $event->getResponse()->getContent());
+        $this->assertEquals(
+            '{"component":"Index","props":[],"url":null,"version":null}',
+            $event->getResponse()->getContent()
+        );
     }
 }

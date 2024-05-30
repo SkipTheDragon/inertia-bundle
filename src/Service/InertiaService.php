@@ -38,16 +38,18 @@ class InertiaService implements InertiaInterface
     protected ?string $rootView = null;
 
     public function __construct(
-        protected Environment          $engine,
-        protected RequestStack         $requestStack,
-        private ContainerInterface     $container,
-        protected ?SerializerInterface $serializer = null,
-    )
-    {
+        protected Environment $engine,
+        protected RequestStack $requestStack,
+        private ContainerInterface $container,
+        protected ?SerializerInterface $serializer = null
+    ) {
         /**
          * Check if SSR is enabled and set the SSR URL.
          */
-        if ($this->container->hasParameter('inertia.ssr.enabled') && $this->container->getParameter('inertia.ssr.enabled')) {
+        if (
+            $this->container->hasParameter('inertia.ssr.enabled') &&
+            $this->container->getParameter('inertia.ssr.enabled')
+        ) {
             $this->useSsr(true);
             $this->setSsrUrl($this->container->getParameter('inertia.ssr.url'));
         }
@@ -56,7 +58,9 @@ class InertiaService implements InertiaInterface
          * Set the root view if it is set in the configuration.
          */
         if ($this->container->hasParameter('inertia.root_view')) {
-            $this->setRootView($this->container->getParameter('inertia.root_view'));
+            $this->setRootView(
+                $this->container->getParameter('inertia.root_view')
+            );
         }
     }
 
@@ -227,13 +231,20 @@ class InertiaService implements InertiaInterface
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function render(string $component, array $props = [], array $viewData = [], array $context = [], ?string $url = null): Response
-    {
+    public function render(
+        string $component,
+        array $props = [],
+        array $viewData = [],
+        array $context = [],
+        ?string $url = null
+    ): Response {
         /**
          * If the root view is not set, throw an exception.
          */
         if ($this->rootView === null) {
-            throw new RuntimeError('The root view is not set. Inertia bundle requires a root view to render the page, set one globally in config/packages/inertia.yaml or pass it to the render method.');
+            throw new RuntimeError(
+                'The root view is not set. Inertia bundle requires a root view to render the page, set one globally in config/packages/inertia.yaml or pass it to the render method.'
+            );
         }
 
         $context = array_merge($this->sharedContext, $context);
@@ -249,17 +260,21 @@ class InertiaService implements InertiaInterface
         /**
          * Get the props that should be loaded.
          */
-        $only = array_filter(explode(',', $request->headers->get('X-Inertia-Partial-Data') ?? ''));
+        $only = array_filter(
+            explode(',', $request->headers->get('X-Inertia-Partial-Data') ?? '')
+        );
 
         /**
          * Decide what props to load, and what props to skip.
          * We will not load lazy props on the first visit, only on partial reloads.
          */
-        $props = ($only && $request->headers->get('X-Inertia-Partial-Component') === $component)
-            ? self::array_only($props, $only)
-            : array_filter($props, function ($prop) {
-                return !($prop instanceof LazyProp);
-            });
+        $props =
+            $only &&
+            $request->headers->get('X-Inertia-Partial-Component') === $component
+                ? self::array_only($props, $only)
+                : array_filter($props, function ($prop) {
+                    return !($prop instanceof LazyProp);
+                });
 
         /**
          * Walk through the props and resolve the lazy props.
@@ -277,7 +292,10 @@ class InertiaService implements InertiaInterface
         /**
          * Serialize the page props.
          */
-        $page = $this->serialize(compact('component', 'props', 'url', 'version'), $context);
+        $page = $this->serialize(
+            compact('component', 'props', 'url', 'version'),
+            $context
+        );
 
         /**
          * If the request is an Inertia request, we return a JSON response.
@@ -294,7 +312,9 @@ class InertiaService implements InertiaInterface
          */
         $response = new Response();
 
-        $response->setContent($this->engine->render($this->rootView, compact('page', 'viewData')));
+        $response->setContent(
+            $this->engine->render($this->rootView, compact('page', 'viewData'))
+        );
 
         return $response;
     }
@@ -314,7 +334,9 @@ class InertiaService implements InertiaInterface
         }
 
         if ($request->headers->has('X-Inertia')) {
-            return new Response('', Response::HTTP_CONFLICT, ['X-Inertia-Location' => $url]);
+            return new Response('', Response::HTTP_CONFLICT, [
+                'X-Inertia-Location' => $url,
+            ]);
         }
 
         return new RedirectResponse($url);
@@ -345,7 +367,7 @@ class InertiaService implements InertiaInterface
          * If the callback is an array, we check if the first element is a service in the container. If it is, we return a LazyProp with the service.
          */
         if (is_array($callback)) {
-            list($name, $action) = array_pad($callback, 2, null);
+            [$name, $action] = array_pad($callback, 2, null);
             $useContainer = is_string($name) && $this->container->has($name);
             /**
              * A service is found in the container and an action is provided, we return a LazyProp with the service and the action.
@@ -381,19 +403,27 @@ class InertiaService implements InertiaInterface
     private function serialize(array $page, array $context = []): array
     {
         if (null !== $this->serializer) {
-            $json = $this->serializer->serialize($page, 'json', array_merge([
-                'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS,
-                AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function () {
-                    return null;
-                },
-                AbstractObjectNormalizer::PRESERVE_EMPTY_OBJECTS => true,
-                AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true,
-            ], $context));
+            $json = $this->serializer->serialize(
+                $page,
+                'json',
+                array_merge(
+                    [
+                        'json_encode_options' =>
+                            JsonResponse::DEFAULT_ENCODING_OPTIONS,
+                        AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function () {
+                            return null;
+                        },
+                        AbstractObjectNormalizer::PRESERVE_EMPTY_OBJECTS => true,
+                        AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true,
+                    ],
+                    $context
+                )
+            );
         } else {
             $json = json_encode($page);
         }
 
-        return (array)json_decode($json, false);
+        return (array) json_decode($json, false);
     }
 
     /**
@@ -403,6 +433,6 @@ class InertiaService implements InertiaInterface
      */
     private static function array_only($array, $keys): array
     {
-        return array_intersect_key($array, array_flip((array)$keys));
+        return array_intersect_key($array, array_flip((array) $keys));
     }
 }
