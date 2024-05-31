@@ -8,22 +8,19 @@ env:
 jobs:
   prettier:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          ref: ${{ github.head_ref }}
-          # Make sure the value of GITHUB_TOKEN will not be persisted in repo's config
-          persist-credentials: false
-
-      - name: Prettify code
-        uses: Damego/prettier_action@5.3
-        with:
-          dry: True
-          prettier_plugins: "@prettier/plugin-php"
-          prettier_options: --config ./.prettierrc --check
+    - name: Check out repo
+      uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      name: Configure npm caching
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-npm-${{ hashFiles('**/workflows/CI.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-npm-
+    - name: Run prettier
+      run: |-
+        npx prettier --check
     
   tests:
     runs-on: ubuntu-latest
