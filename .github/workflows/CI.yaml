@@ -10,22 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - uses: hudsonm62/prettier-cli@v1
         with:
-          # Make sure the actual branch is checked out when running on pull requests
-          ref: ${{ github.head_ref }}
-          # This is important to fetch the changes to the previous commit
-          fetch-depth: 0
-          
-      - name: Prettify code
-        uses: AbdulRehman-1/pr-prettier@initial
-        with:
-          dry: True
-          prettier_plugins: "@prettier/plugin-php"
-          prettier_options: --config ./.prettierrc --check
-          only_changed: true
-          
+          args: --check .
+
+    
   tests:
     runs-on: ubuntu-latest
 
