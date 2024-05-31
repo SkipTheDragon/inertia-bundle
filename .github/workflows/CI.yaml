@@ -20,6 +20,7 @@ jobs:
           ${{ runner.os }}-npm-
     - name: Run prettier
       run: |-
+        npm i
         npx prettier --check
     
   tests:
