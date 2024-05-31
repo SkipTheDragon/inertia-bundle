@@ -9,26 +9,26 @@ jobs:
   prettier:
     runs-on: ubuntu-latest
     steps:
-    - name: Check out repo
-      uses: actions/checkout@v2
-    - uses: actions/cache@v2
-      name: Configure npm caching
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-npm-${{ hashFiles('**/workflows/CI.yml') }}
-        restore-keys: |
-          ${{ runner.os }}-npm-
-    - name: Run prettier
-      run: |-
-        npm i
-        npx prettier --check .
-    
+      - name: Check out repo
+        uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        name: Configure npm caching
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/workflows/CI.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      - name: Run prettier
+        run: |-
+          npm i
+          npx prettier --check .
+
   tests:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        php-versions: ['8.0', '8.1' , '8.2']
+        php-versions: ['8.0', '8.1', '8.2']
 
     name: Tests on PHP ${{ matrix.php-versions }}
 
