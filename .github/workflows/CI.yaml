@@ -10,11 +10,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: hudsonm62/prettier-cli@v1
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
-          args: --check .
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+          # Make sure the value of GITHUB_TOKEN will not be persisted in repo's config
+          persist-credentials: false
 
+      - name: Prettify code
+        uses: Damego/prettier_action@5.3
+        with:
+          dry: True
+          prettier_plugins: "@prettier/plugin-php"
+          prettier_options: --config ./.prettierrc --check
     
   tests:
     runs-on: ubuntu-latest
