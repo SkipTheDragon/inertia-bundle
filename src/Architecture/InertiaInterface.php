@@ -61,7 +61,6 @@ interface InertiaInterface
      */
     public function context(string $key, mixed $value = null): void;
 
-
     /**
      * Get the context for the serializer by key.
      * @param string|null $key
@@ -150,5 +149,12 @@ interface InertiaInterface
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function render(string $component, array $props = [], array $viewData = [], array $context = [], ?string $url = null, ?array $forms = []): Response;
+    public function render(
+        string $component,
+        array $props = [],
+        array $viewData = [],
+        array $context = [],
+        ?string $url = null,
+        ?array $forms = []
+    ): Response;
 }
