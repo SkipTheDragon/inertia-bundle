@@ -38,7 +38,7 @@ class InertiaTwigExtension extends AbstractExtension
             ),
             new TwigFunction(
                 'inertiaHead',
-                Closure::fromCallable([$this, 'inertiaFunction'])
+                Closure::fromCallable([$this, 'inertiaHeadFunction'])
             ),
         ];
     }
