@@ -11,19 +11,20 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          # Make sure the actual branch is checked out when running on pull requests
           ref: ${{ github.head_ref }}
-          # Make sure the value of GITHUB_TOKEN will not be persisted in repo's config
-          persist-credentials: false
-
+          # This is important to fetch the changes to the previous commit
+          fetch-depth: 0
+          
       - name: Prettify code
-        uses: creyD/prettier_action@v4.0
+        uses: creyD/prettier_action@v3.1
         with:
           dry: True
           prettier_plugins: "@prettier/plugin-php"
           prettier_options: --config ./.prettierrc --check
+          only_changed: true
           
   tests:
     runs-on: ubuntu-latest
