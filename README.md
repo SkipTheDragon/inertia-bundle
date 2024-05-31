@@ -1,9 +1,8 @@
 # Inertia.js Symfony Adapter
 
 [![CI](https://github.com/skipthedragon/inertia-bundle/workflows/CI/badge.svg)](https://github.com/skipthedragon/inertia-bundle/actions)
-[![StyleCI](https://github.styleci.io/repos/201484253/shield?style=flat)](https://github.styleci.io/repos/201484253)
-
-This is an Inertia.js server-side adapter based on [inertia-laravel](https://github.com/inertiajs/inertia-laravel), but
+        
+    This is an Inertia.js server-side adapter based on [inertia-laravel](https://github.com/inertiajs/inertia-laravel), but
 for Symfony 5, 6 and 7.
 
 ## Quick start
