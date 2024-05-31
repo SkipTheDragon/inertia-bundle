@@ -19,7 +19,7 @@ jobs:
           fetch-depth: 0
           
       - name: Prettify code
-        uses: creyD/prettier_action@v4.0
+        uses: AbdulRehman-1/pr-prettier@latest
         with:
           dry: True
           prettier_plugins: "@prettier/plugin-php"
