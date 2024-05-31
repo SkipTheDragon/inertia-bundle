@@ -23,7 +23,7 @@ jobs:
         with:
           dry: True
           prettier_plugins: "@prettier/plugin-php"
-          prettier_options: --check
+          prettier_options: --config ./.prettierrc --check
           
   tests:
     runs-on: ubuntu-latest
