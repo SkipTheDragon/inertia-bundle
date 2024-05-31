@@ -1,20 +1,20 @@
 ### React + Encore + Inertia setup
 
 For React:
+
 ```javascript
-const Encore = require('@symfony/webpack-encore')
-const path = require('path')
+const Encore = require('@symfony/webpack-encore');
+const path = require('path');
 
 if (!Encore.isRuntimeEnvironmentConfigured()) {
-  Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev')
+  Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
 }
 
-Encore
-  .setOutputPath('public/build/')
+Encore.setOutputPath('public/build/')
   .setPublicPath('/build')
   .enableReactPreset()
   .addAliases({
-    '@': path.resolve('assets/js')
+    '@': path.resolve('assets/js'),
   })
   .addEntry('app', './assets/js/app.js')
   .splitEntryChunks()
@@ -24,11 +24,11 @@ Encore
   .disableSingleRuntimeChunk()
   .configureBabel(() => {}, {
     useBuiltIns: 'usage',
-    corejs: 3
+    corejs: 3,
   })
-  .enableSassLoader()
+  .enableSassLoader();
 
-module.exports = Encore.getWebpackConfig()
+module.exports = Encore.getWebpackConfig();
 ```
 
 ## Continue with [usage](../usage.md) section.

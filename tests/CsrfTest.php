@@ -32,20 +32,24 @@ class CsrfTest extends InertiaBaseConfig
         $event = new RequestEvent(
             $this->createMock(HttpKernelInterface::class),
             $request,
-            HttpKernelInterface::MAIN_REQUEST,
+            HttpKernelInterface::MAIN_REQUEST
         );
 
         $event->setResponse(new Response('Test Content.'));
 
         $listener->onKernelRequest($event);
-        $this->assertEquals('Something went wrong with Inertia!', $event->getResponse()->getContent());
+        $this->assertEquals(
+            'Something went wrong with Inertia!',
+            $event->getResponse()->getContent()
+        );
     }
 
     public function testCSRFValidTokenRequest()
     {
         $csrfToken = $this->createMock(CsrfTokenManagerInterface::class);
 
-        $csrfToken->expects($this->once())
+        $csrfToken
+            ->expects($this->once())
             ->method('isTokenValid')
             ->willReturn(true);
 
@@ -60,19 +64,22 @@ class CsrfTest extends InertiaBaseConfig
         // Create mock request:
         $request = Request::create('http://localhost/');
         $request->headers->set('X-Inertia', true);
-        $request->cookies->set('X-XSRF-TOKEN', 'sadlokasds' );
+        $request->cookies->set('X-XSRF-TOKEN', 'sadlokasds');
 
         $event = new RequestEvent(
             $this->createMock(HttpKernelInterface::class),
             $request,
-            HttpKernelInterface::MAIN_REQUEST,
+            HttpKernelInterface::MAIN_REQUEST
         );
 
         $event->setResponse(new Response('Test Content.'));
 
         $listener->onKernelRequest($event);
 
-        $this->assertEquals('Test Content.', $event->getResponse()->getContent());
+        $this->assertEquals(
+            'Test Content.',
+            $event->getResponse()->getContent()
+        );
     }
 
     public function testCsrfTokenResponseSetCookie()
@@ -92,11 +99,17 @@ class CsrfTest extends InertiaBaseConfig
             $this->createMock(HttpKernelInterface::class),
             $request,
             HttpKernelInterface::MAIN_REQUEST,
-            new Response('Test Content.'),
+            new Response('Test Content.')
         );
 
         $listener->onKernelResponse($event);
 
-        $this->assertEquals('XSRF-TOKEN', $event->getResponse()->headers->getCookies(ResponseHeaderBag::COOKIES_FLAT)[0]->getName());
+        $this->assertEquals(
+            'XSRF-TOKEN',
+            $event
+                ->getResponse()
+                ->headers->getCookies(ResponseHeaderBag::COOKIES_FLAT)[0]
+                ->getName()
+        );
     }
 }

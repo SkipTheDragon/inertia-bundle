@@ -23,13 +23,12 @@ class InertiaListener
     protected string $inertiaCsrfTokenName = 'X-Inertia-CSRF-TOKEN';
 
     public function __construct(
-        protected InertiaInterface                     $inertia,
-        protected CsrfTokenManagerInterface            $csrfTokenManager,
-        protected bool                                 $debug,
-        protected ContainerInterface                   $container,
+        protected InertiaInterface $inertia,
+        protected CsrfTokenManagerInterface $csrfTokenManager,
+        protected bool $debug,
+        protected ContainerInterface $container,
         protected DefaultInertiaErrorResponseInterface $defaultInertiaErrorResponse
-    )
-    {
+    ) {
     }
 
     /**
@@ -49,10 +48,18 @@ class InertiaListener
 
         // Validate CSRF token
         if ($this->container->getParameter('inertia.csrf.enabled')) {
-            $csrfToken = $request->headers->get($this->container->getParameter('inertia.csrf.header_name'));
+            $csrfToken = $request->headers->get(
+                $this->container->getParameter('inertia.csrf.header_name')
+            );
 
-            if (!$this->csrfTokenManager->isTokenValid(new CsrfToken($this->inertiaCsrfTokenName, $csrfToken))) {
-                $event->setResponse($this->defaultInertiaErrorResponse->getResponse());
+            if (
+                !$this->csrfTokenManager->isTokenValid(
+                    new CsrfToken($this->inertiaCsrfTokenName, $csrfToken)
+                )
+            ) {
+                $event->setResponse(
+                    $this->defaultInertiaErrorResponse->getResponse()
+                );
                 return;
             }
         }
@@ -60,10 +67,14 @@ class InertiaListener
         /**
          * Tell Inertia to update the page if the version has changed.
          */
-        if ('GET' === $request->getMethod()
-            && $request->headers->get('X-Inertia-Version') !== $this->inertia->getVersion()
+        if (
+            'GET' === $request->getMethod() &&
+            $request->headers->get('X-Inertia-Version') !==
+                $this->inertia->getVersion()
         ) {
-            $response = new Response('', Response::HTTP_CONFLICT, ['X-Inertia-Location' => $request->getUri()]);
+            $response = new Response('', Response::HTTP_CONFLICT, [
+                'X-Inertia-Location' => $request->getUri(),
+            ]);
 
             $event->setResponse($response);
         }
@@ -80,19 +91,25 @@ class InertiaListener
          * We add this cookie to any request, not just Inertia requests.
          */
         if ($this->container->getParameter('inertia.csrf.enabled')) {
-            $event->getResponse()->headers->setCookie(
-                new Cookie(
-                    $this->container->getParameter('inertia.csrf.cookie_name'),
-                    $this->csrfTokenManager->refreshToken($this->inertiaCsrfTokenName),
-                    $this->container->getParameter('inertia.csrf.expire'),
-                    $this->container->getParameter('inertia.csrf.path'),
-                    $this->container->getParameter('inertia.csrf.domain'),
-                    $this->container->getParameter('inertia.csrf.secure'),
-                    false,
-                    $this->container->getParameter('inertia.csrf.raw'),
-                    $this->container->getParameter('inertia.csrf.samesite')
-                )
-            );
+            $event
+                ->getResponse()
+                ->headers->setCookie(
+                    new Cookie(
+                        $this->container->getParameter(
+                            'inertia.csrf.cookie_name'
+                        ),
+                        $this->csrfTokenManager->refreshToken(
+                            $this->inertiaCsrfTokenName
+                        ),
+                        $this->container->getParameter('inertia.csrf.expire'),
+                        $this->container->getParameter('inertia.csrf.path'),
+                        $this->container->getParameter('inertia.csrf.domain'),
+                        $this->container->getParameter('inertia.csrf.secure'),
+                        false,
+                        $this->container->getParameter('inertia.csrf.raw'),
+                        $this->container->getParameter('inertia.csrf.samesite')
+                    )
+                );
         }
 
         /**
@@ -106,15 +123,22 @@ class InertiaListener
          * Refreshes the toolbar when the request is an AJAX request.
          */
         if ($this->debug && $event->getRequest()->isXmlHttpRequest()) {
-            $event->getResponse()->headers->set('Symfony-Debug-Toolbar-Replace', 1);
+            $event
+                ->getResponse()
+                ->headers->set('Symfony-Debug-Toolbar-Replace', 1);
         }
 
         /**
          * If the response is a redirect and the request method is PUT, PATCH, or DELETE, we need to change the status code to 303.
          */
-        if ($event->getResponse()->isRedirect()
-            && Response::HTTP_FOUND === $event->getResponse()->getStatusCode()
-            && in_array($event->getRequest()->getMethod(), ['PUT', 'PATCH', 'DELETE'])
+        if (
+            $event->getResponse()->isRedirect() &&
+            Response::HTTP_FOUND === $event->getResponse()->getStatusCode() &&
+            in_array($event->getRequest()->getMethod(), [
+                'PUT',
+                'PATCH',
+                'DELETE',
+            ])
         ) {
             $event->getResponse()->setStatusCode(Response::HTTP_SEE_OTHER);
         }

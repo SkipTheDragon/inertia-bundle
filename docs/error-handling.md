@@ -27,10 +27,7 @@ When building Symfony applications, you can accomplish this by using one of the 
 2. [Working with the kernel.exception Event](https://symfony.com/doc/current/controller/error_pages.html#working-with-the-kernel-exception-event)
 
 We will not get into the specifics of how to do this in Symfony, as it is well documented in the Symfony documentation.
-But the general idea is to return an Inertia response pointing to your error page. 
+But the general idea is to return an Inertia response pointing to your error page.
 
 NOTE: By using the first method it's pretty straightforward, but if you choose the second method, you will need to edit the
 Response object directly which offers you more flexibility but also introduces more complexity.
-
-
-

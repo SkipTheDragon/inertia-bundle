@@ -28,13 +28,16 @@ class InertiaBaseConfig extends TestCase
     protected array $inertiaConfig = [
         'root_view' => 'base.twig.html',
         'ssr' => ['enabled' => false, 'url' => 'http://localhost:3000'],
-        'csrf' => ['enabled' => true]
+        'csrf' => ['enabled' => true],
     ];
 
     public function setUp(): void
     {
         $container = $this->createContainerBuilder([
-            'framework' => ['secret' => 'testing', 'http_method_override' => false],
+            'framework' => [
+                'secret' => 'testing',
+                'http_method_override' => false,
+            ],
             'inertia' => $this->inertiaConfig,
         ]);
         $container->compile();
@@ -44,26 +47,37 @@ class InertiaBaseConfig extends TestCase
         $this->environment = \Mockery::mock(Environment::class);
         $this->requestStack = \Mockery::mock(RequestStack::class);
 
-        $this->inertia = new InertiaService($this->environment, $this->requestStack, $container, $this->serializer);
+        $this->inertia = new InertiaService(
+            $this->environment,
+            $this->requestStack,
+            $container,
+            $this->serializer
+        );
     }
 
-    private static function createContainerBuilder(array $configs = []): ContainerBuilder
-    {
-        $container = new ContainerBuilder(new ParameterBag([
-            'kernel.bundles' => ['FrameworkBundle' => FrameworkBundle::class, 'InertiaBundle' => InertiaBundle::class],
-            'kernel.bundles_metadata' => [],
-            'kernel.cache_dir' => __DIR__,
-            'kernel.debug' => false,
-            'kernel.environment' => 'test',
-            'kernel.name' => 'kernel',
-            'kernel.root_dir' => __DIR__,
-            'kernel.project_dir' => __DIR__,
-            'kernel.container_class' => 'AutowiringTestContainer',
-            'kernel.charset' => 'utf8',
-            'kernel.runtime_environment' => 'test',
-            'kernel.build_dir' => __DIR__,
-            'debug.file_link_format' => null,
-        ]));
+    private static function createContainerBuilder(
+        array $configs = []
+    ): ContainerBuilder {
+        $container = new ContainerBuilder(
+            new ParameterBag([
+                'kernel.bundles' => [
+                    'FrameworkBundle' => FrameworkBundle::class,
+                    'InertiaBundle' => InertiaBundle::class,
+                ],
+                'kernel.bundles_metadata' => [],
+                'kernel.cache_dir' => __DIR__,
+                'kernel.debug' => false,
+                'kernel.environment' => 'test',
+                'kernel.name' => 'kernel',
+                'kernel.root_dir' => __DIR__,
+                'kernel.project_dir' => __DIR__,
+                'kernel.container_class' => 'AutowiringTestContainer',
+                'kernel.charset' => 'utf8',
+                'kernel.runtime_environment' => 'test',
+                'kernel.build_dir' => __DIR__,
+                'debug.file_link_format' => null,
+            ])
+        );
 
         $container->registerExtension(new FrameworkExtension());
         $container->registerExtension(new InertiaExtension());

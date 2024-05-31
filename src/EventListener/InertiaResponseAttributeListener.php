@@ -19,9 +19,7 @@ class InertiaResponseAttributeListener implements EventSubscriberInterface
     /**
      * @param InertiaInterface $inertia
      */
-    public function __construct(
-        protected InertiaInterface $inertia,
-    )
+    public function __construct(protected InertiaInterface $inertia)
     {
     }
 
@@ -39,13 +37,30 @@ class InertiaResponseAttributeListener implements EventSubscriberInterface
 
         $attribute = $event->getRequest()->attributes->get('_template');
 
-        if (!$attribute instanceof InertiaResponse && !$attribute = $event->controllerArgumentsEvent?->getAttributes()[InertiaResponse::class][0] ?? null) {
+        if (
+            !$attribute instanceof InertiaResponse &&
+            !($attribute =
+                $event->controllerArgumentsEvent?->getAttributes()[
+                    InertiaResponse::class
+                ][0] ?? null)
+        ) {
             return;
         }
 
-        $parameters ??= $this->resolveParameters($event->controllerArgumentsEvent, $attribute->vars);
+        $parameters ??= $this->resolveParameters(
+            $event->controllerArgumentsEvent,
+            $attribute->vars
+        );
 
-        $event->setResponse($this->inertia->render($attribute->component, $parameters, $attribute->viewData, $attribute->context, $attribute->url));
+        $event->setResponse(
+            $this->inertia->render(
+                $attribute->component,
+                $parameters,
+                $attribute->viewData,
+                $attribute->context,
+                $attribute->url
+            )
+        );
     }
 
     public static function getSubscribedEvents(): array
@@ -62,8 +77,10 @@ class InertiaResponseAttributeListener implements EventSubscriberInterface
      * @param array|null $vars
      * @return array
      */
-    private function resolveParameters(ControllerArgumentsEvent $event, ?array $vars): array
-    {
+    private function resolveParameters(
+        ControllerArgumentsEvent $event,
+        ?array $vars
+    ): array {
         if ([] === $vars) {
             return [];
         }

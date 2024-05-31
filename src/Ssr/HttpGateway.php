@@ -16,8 +16,7 @@ class HttpGateway implements GatewayInterface
     public function __construct(
         private HttpClientInterface $httpClient,
         private InertiaInterface $inertia
-    )
-    {
+    ) {
     }
 
     /**

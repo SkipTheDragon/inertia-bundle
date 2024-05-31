@@ -21,7 +21,10 @@ class InertiaServiceTest extends InertiaBaseConfig
     {
         $this->inertia->share('app_name', 'Testing App 1');
         $this->inertia->share('app_version', '1.0.0');
-        $this->assertEquals('Testing App 1', $this->inertia->getShared('app_name'));
+        $this->assertEquals(
+            'Testing App 1',
+            $this->inertia->getShared('app_name')
+        );
         $this->assertEquals('1.0.0', $this->inertia->getShared('app_version'));
     }
 
@@ -47,23 +50,42 @@ class InertiaServiceTest extends InertiaBaseConfig
 
     public function testRootView()
     {
-        $this->assertEquals($this->inertiaConfig['root_view'], $this->inertia->getRootView());
+        $this->assertEquals(
+            $this->inertiaConfig['root_view'],
+            $this->inertia->getRootView()
+        );
     }
 
     public function testSetRootView()
     {
         $this->inertia->setRootView('other-root.twig.html');
-        $this->assertEquals('other-root.twig.html', $this->inertia->getRootView());
+        $this->assertEquals(
+            'other-root.twig.html',
+            $this->inertia->getRootView()
+        );
     }
 
     public function testRenderJSON()
     {
         $mockRequest = \Mockery::mock(Request::class);
-        $mockRequest->shouldReceive('getRequestUri')->andSet('headers', new HeaderBag(['X-Inertia' => true]));
-        $mockRequest->allows()->getRequestUri()->andReturns('https://example.test');
-        $this->requestStack->allows()->getCurrentRequest()->andReturns($mockRequest);
+        $mockRequest
+            ->shouldReceive('getRequestUri')
+            ->andSet('headers', new HeaderBag(['X-Inertia' => true]));
+        $mockRequest
+            ->allows()
+            ->getRequestUri()
+            ->andReturns('https://example.test');
+        $this->requestStack
+            ->allows()
+            ->getCurrentRequest()
+            ->andReturns($mockRequest);
 
-        $this->inertia = new InertiaService($this->environment, $this->requestStack, $this->container, $this->serializer);
+        $this->inertia = new InertiaService(
+            $this->environment,
+            $this->requestStack,
+            $this->container,
+            $this->serializer
+        );
 
         $response = $this->inertia->render('Dashboard');
         $this->assertInstanceOf(JsonResponse::class, $response);
@@ -72,11 +94,24 @@ class InertiaServiceTest extends InertiaBaseConfig
     public function testRenderProps()
     {
         $mockRequest = \Mockery::mock(Request::class);
-        $mockRequest->shouldReceive('getRequestUri')->andSet('headers', new HeaderBag(['X-Inertia' => true]));
-        $mockRequest->allows()->getRequestUri()->andReturns('https://example.test');
-        $this->requestStack->allows()->getCurrentRequest()->andReturns($mockRequest);
+        $mockRequest
+            ->shouldReceive('getRequestUri')
+            ->andSet('headers', new HeaderBag(['X-Inertia' => true]));
+        $mockRequest
+            ->allows()
+            ->getRequestUri()
+            ->andReturns('https://example.test');
+        $this->requestStack
+            ->allows()
+            ->getCurrentRequest()
+            ->andReturns($mockRequest);
 
-        $this->inertia = new InertiaService($this->environment, $this->requestStack, $this->container, $this->serializer);
+        $this->inertia = new InertiaService(
+            $this->environment,
+            $this->requestStack,
+            $this->container,
+            $this->serializer
+        );
 
         $response = $this->inertia->render('Dashboard', ['test' => 123]);
         $data = json_decode($response->getContent(), true);
@@ -86,17 +121,37 @@ class InertiaServiceTest extends InertiaBaseConfig
     public function testRenderSharedProps()
     {
         $mockRequest = \Mockery::mock(Request::class);
-        $mockRequest->shouldReceive('getRequestUri')->andSet('headers', new HeaderBag(['X-Inertia' => true]));
-        $mockRequest->allows()->getRequestUri()->andReturns('https://example.test');
-        $this->requestStack->allows()->getCurrentRequest()->andReturns($mockRequest);
+        $mockRequest
+            ->shouldReceive('getRequestUri')
+            ->andSet('headers', new HeaderBag(['X-Inertia' => true]));
+        $mockRequest
+            ->allows()
+            ->getRequestUri()
+            ->andReturns('https://example.test');
+        $this->requestStack
+            ->allows()
+            ->getCurrentRequest()
+            ->andReturns($mockRequest);
 
-        $this->inertia = new InertiaService($this->environment, $this->requestStack, $this->container, $this->serializer);
+        $this->inertia = new InertiaService(
+            $this->environment,
+            $this->requestStack,
+            $this->container,
+            $this->serializer
+        );
         $this->inertia->share('app_name', 'Testing App 3');
         $this->inertia->share('app_version', '2.0.0');
 
         $response = $this->inertia->render('Dashboard', ['test' => 123]);
         $data = json_decode($response->getContent(), true);
-        $this->assertEquals(['test' => 123, 'app_name' => 'Testing App 3', 'app_version' => '2.0.0'], $data['props']);
+        $this->assertEquals(
+            [
+                'test' => 123,
+                'app_name' => 'Testing App 3',
+                'app_version' => '2.0.0',
+            ],
+            $data['props']
+        );
     }
 
     /**
@@ -107,15 +162,30 @@ class InertiaServiceTest extends InertiaBaseConfig
     public function testRenderClosureProps()
     {
         $mockRequest = \Mockery::mock(Request::class);
-        $mockRequest->shouldReceive('getRequestUri')->andSet('headers', new HeaderBag(['X-Inertia' => true]));
-        $mockRequest->allows()->getRequestUri()->andReturns('https://example.test');
-        $this->requestStack->allows()->getCurrentRequest()->andReturns($mockRequest);
+        $mockRequest
+            ->shouldReceive('getRequestUri')
+            ->andSet('headers', new HeaderBag(['X-Inertia' => true]));
+        $mockRequest
+            ->allows()
+            ->getRequestUri()
+            ->andReturns('https://example.test');
+        $this->requestStack
+            ->allows()
+            ->getCurrentRequest()
+            ->andReturns($mockRequest);
 
-        $this->inertia = new InertiaService($this->environment, $this->requestStack, $this->container, $this->serializer);
+        $this->inertia = new InertiaService(
+            $this->environment,
+            $this->requestStack,
+            $this->container,
+            $this->serializer
+        );
 
-        $response = $this->inertia->render('Dashboard', ['test' => function () {
-            return 'test-value';
-        }]);
+        $response = $this->inertia->render('Dashboard', [
+            'test' => function () {
+                return 'test-value';
+            },
+        ]);
         $this->assertEquals(
             'test-value',
             json_decode($response->getContent(), true)['props']['test']
@@ -130,13 +200,26 @@ class InertiaServiceTest extends InertiaBaseConfig
     public function testRenderDoc()
     {
         $mockRequest = \Mockery::mock(Request::class);
-        $mockRequest->shouldReceive('getRequestUri')->andSet('headers', new HeaderBag(['X-Inertia' => false]));
-        $mockRequest->allows()->getRequestUri()->andReturns('https://example.test');
-        $this->requestStack->allows()->getCurrentRequest()->andReturns($mockRequest);
+        $mockRequest
+            ->shouldReceive('getRequestUri')
+            ->andSet('headers', new HeaderBag(['X-Inertia' => false]));
+        $mockRequest
+            ->allows()
+            ->getRequestUri()
+            ->andReturns('https://example.test');
+        $this->requestStack
+            ->allows()
+            ->getCurrentRequest()
+            ->andReturns($mockRequest);
 
         $this->environment->allows('render')->andReturn('<div>123</div>');
 
-        $this->inertia = new InertiaService($this->environment, $this->requestStack, $this->container, $this->serializer);
+        $this->inertia = new InertiaService(
+            $this->environment,
+            $this->requestStack,
+            $this->container,
+            $this->serializer
+        );
 
         $response = $this->inertia->render('Dashboard');
         $this->assertInstanceOf(Response::class, $response);
@@ -146,8 +229,14 @@ class InertiaServiceTest extends InertiaBaseConfig
     {
         $this->inertia->viewData('app_name', 'Testing App 1');
         $this->inertia->viewData('app_version', '1.0.0');
-        $this->assertEquals('Testing App 1', $this->inertia->getViewData('app_name'));
-        $this->assertEquals('1.0.0', $this->inertia->getViewData('app_version'));
+        $this->assertEquals(
+            'Testing App 1',
+            $this->inertia->getViewData('app_name')
+        );
+        $this->assertEquals(
+            '1.0.0',
+            $this->inertia->getViewData('app_version')
+        );
     }
 
     public function testViewDataMultiple()
@@ -166,7 +255,10 @@ class InertiaServiceTest extends InertiaBaseConfig
     public function testContextSingle()
     {
         $this->inertia->context('groups', ['group1', 'group2']);
-        $this->assertEquals(['group1', 'group2'], $this->inertia->getContext('groups'));
+        $this->assertEquals(
+            ['group1', 'group2'],
+            $this->inertia->getContext('groups')
+        );
     }
 
     public function testContextMultiple()
@@ -188,11 +280,24 @@ class InertiaServiceTest extends InertiaBaseConfig
     public function testTypesArePreservedUsingJsonEncode()
     {
         $mockRequest = \Mockery::mock(Request::class);
-        $mockRequest->shouldReceive('getRequestUri')->andSet('headers', new HeaderBag(['X-Inertia' => true]));
-        $mockRequest->allows()->getRequestUri()->andReturns('https://example.test');
-        $this->requestStack->allows()->getCurrentRequest()->andReturns($mockRequest);
+        $mockRequest
+            ->shouldReceive('getRequestUri')
+            ->andSet('headers', new HeaderBag(['X-Inertia' => true]));
+        $mockRequest
+            ->allows()
+            ->getRequestUri()
+            ->andReturns('https://example.test');
+        $this->requestStack
+            ->allows()
+            ->getCurrentRequest()
+            ->andReturns($mockRequest);
 
-        $this->inertia = new InertiaService($this->environment, $this->requestStack, $this->container, $this->serializer);
+        $this->inertia = new InertiaService(
+            $this->environment,
+            $this->requestStack,
+            $this->container,
+            $this->serializer
+        );
 
         $this->innerTestTypesArePreserved(false);
     }
@@ -205,12 +310,28 @@ class InertiaServiceTest extends InertiaBaseConfig
     public function testTypesArePreservedUsingSerializer()
     {
         $mockRequest = \Mockery::mock(Request::class);
-        $mockRequest->shouldReceive('getRequestUri')->andSet('headers', new HeaderBag(['X-Inertia' => true]));
-        $mockRequest->allows()->getRequestUri()->andReturns('https://example.test');
-        $this->requestStack->allows()->getCurrentRequest()->andReturns($mockRequest);
+        $mockRequest
+            ->shouldReceive('getRequestUri')
+            ->andSet('headers', new HeaderBag(['X-Inertia' => true]));
+        $mockRequest
+            ->allows()
+            ->getRequestUri()
+            ->andReturns('https://example.test');
+        $this->requestStack
+            ->allows()
+            ->getCurrentRequest()
+            ->andReturns($mockRequest);
 
-        $this->serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
-        $this->inertia = new InertiaService($this->environment, $this->requestStack, $this->container, $this->serializer);
+        $this->serializer = new Serializer(
+            [new ObjectNormalizer()],
+            [new JsonEncoder()]
+        );
+        $this->inertia = new InertiaService(
+            $this->environment,
+            $this->requestStack,
+            $this->container,
+            $this->serializer
+        );
 
         $this->innerTestTypesArePreserved(true);
     }
@@ -235,12 +356,12 @@ class InertiaServiceTest extends InertiaBaseConfig
             'empty_iterable_object' => new \ArrayObject(),
             'array' => [1, 2, 3],
             'empty_array' => [],
-            'associative_array' => ['test' => 'test']
+            'associative_array' => ['test' => 'test'],
         ];
 
         $response = $this->inertia->render('Dashboard', $props);
         $data = json_decode($response->getContent(), false);
-        $responseProps = (array)$data->props;
+        $responseProps = (array) $data->props;
 
         $this->assertIsInt($responseProps['integer']);
         $this->assertIsFloat($responseProps['float']);
