@@ -19,7 +19,7 @@ jobs:
           persist-credentials: false
 
       - name: Prettify code
-        uses: creyD/prettier_action@v4.3
+        uses: creyD/prettier_action@v4
         with:
           dry: True
           prettier_plugins: "@prettier/plugin-php"
