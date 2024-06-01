@@ -10,14 +10,15 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class TestFormType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
-        $builder
-            ->add('username', TextType::class, array(
-                'constraints' => array(
-                    new NotBlank(['message' => 'Your error message']),
-                )
-            ));
+    public function buildForm(
+        FormBuilderInterface $builder,
+        array $options
+    ): void {
+        $builder->add('username', TextType::class, [
+            'constraints' => [
+                new NotBlank(['message' => 'Your error message']),
+            ],
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -16,7 +16,9 @@ class InertiaFormProcessorServiceTest extends InertiaBaseConfig
         $inertiaFormProcessorService = new InertiaFormProcessorService();
 
         $factory = Forms::createFormFactoryBuilder()
-            ->addExtensions([new ValidatorExtension(Validation::createValidator())])
+            ->addExtensions([
+                new ValidatorExtension(Validation::createValidator()),
+            ])
             ->addTypeExtensions([])
             ->addTypes([])
             ->addTypeGuessers([])
@@ -28,10 +30,13 @@ class InertiaFormProcessorServiceTest extends InertiaBaseConfig
         $form->submit($formData);
         $this->assertTrue($form->isSynchronized());
 
-        $this->assertEquals([
-            "test_form" => [
-                "username" => "Your error message"
-            ]
-        ], $inertiaFormProcessorService->processForms([$form]));
+        $this->assertEquals(
+            [
+                'test_form' => [
+                    'username' => 'Your error message',
+                ],
+            ],
+            $inertiaFormProcessorService->processForms([$form])
+        );
     }
 }

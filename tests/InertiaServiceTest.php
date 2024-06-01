@@ -24,10 +24,10 @@ use Twig\Error\SyntaxError;
 
 class InertiaServiceTest extends InertiaBaseConfig
 {
-//    public function testFormsValidation()
-//    {
-//
-//    }
+    //    public function testFormsValidation()
+    //    {
+    //
+    //    }
 
     public function testFormsValidationOverride()
     {
@@ -52,9 +52,10 @@ class InertiaServiceTest extends InertiaBaseConfig
             $this->serializer
         );
 
-
         $factory = Forms::createFormFactoryBuilder()
-            ->addExtensions([new ValidatorExtension(Validation::createValidator())])
+            ->addExtensions([
+                new ValidatorExtension(Validation::createValidator()),
+            ])
             ->addTypeExtensions([])
             ->addTypes([])
             ->addTypeGuessers([])
@@ -69,9 +70,11 @@ class InertiaServiceTest extends InertiaBaseConfig
 
         $this->assertTrue($form->isSynchronized());
 
-        $response = $this->inertia->render('Dashboard', ['errors' => ['test' => 'test']], forms: [
-            $form
-        ]);
+        $response = $this->inertia->render(
+            'Dashboard',
+            ['errors' => ['test' => 'test']],
+            forms: [$form]
+        );
 
         $this->assertInstanceOf(Response::class, $response);
         $data = json_decode($response->getContent(), true);
@@ -101,9 +104,10 @@ class InertiaServiceTest extends InertiaBaseConfig
             $this->serializer
         );
 
-
         $factory = Forms::createFormFactoryBuilder()
-            ->addExtensions([new ValidatorExtension(Validation::createValidator())])
+            ->addExtensions([
+                new ValidatorExtension(Validation::createValidator()),
+            ])
             ->addTypeExtensions([])
             ->addTypes([])
             ->addTypeGuessers([])
@@ -115,17 +119,20 @@ class InertiaServiceTest extends InertiaBaseConfig
         $form->submit($formData);
         $this->assertTrue($form->isSynchronized());
 
-        $response = $this->inertia->render('Dashboard', [], forms: [
-            $form
-        ]);
+        $response = $this->inertia->render('Dashboard', [], forms: [$form]);
 
         $this->assertInstanceOf(Response::class, $response);
         $data = json_decode($response->getContent(), true);
-        $this->assertEquals(['errors' => [
-            "test_form" => [
-                "username" => "Your error message"
-            ]
-        ]], $data['props']);
+        $this->assertEquals(
+            [
+                'errors' => [
+                    'test_form' => [
+                        'username' => 'Your error message',
+                    ],
+                ],
+            ],
+            $data['props']
+        );
     }
 
     public function testSharedSingle()
@@ -479,7 +486,7 @@ class InertiaServiceTest extends InertiaBaseConfig
 
         $response = $this->inertia->render('Dashboard', $props);
         $data = json_decode($response->getContent(), false);
-        $responseProps = (array)$data->props;
+        $responseProps = (array) $data->props;
 
         $this->assertIsInt($responseProps['integer']);
         $this->assertIsFloat($responseProps['float']);
