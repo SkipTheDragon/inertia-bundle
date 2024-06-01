@@ -2,8 +2,12 @@
 
 namespace Rompetomp\InertiaBundle\Tests;
 
+use Rompetomp\InertiaBundle\Service\InertiaFormProcessorService;
 use Rompetomp\InertiaBundle\Service\InertiaService;
 use Rompetomp\InertiaBundle\Tests\Fixtures\InertiaBaseConfig;
+use Rompetomp\InertiaBundle\Tests\Fixtures\TestFormType;
+use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
+use Symfony\Component\Form\Forms;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,12 +15,119 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
 class InertiaServiceTest extends InertiaBaseConfig
 {
+//    public function testFormsValidation()
+//    {
+//
+//    }
+
+    public function testFormsValidationOverride()
+    {
+        $mockRequest = \Mockery::mock(Request::class);
+        $mockRequest
+            ->shouldReceive('getRequestUri')
+            ->andSet('headers', new HeaderBag(['X-Inertia' => true]));
+        $mockRequest
+            ->allows()
+            ->getRequestUri()
+            ->andReturns('https://example.test');
+        $this->requestStack
+            ->allows()
+            ->getCurrentRequest()
+            ->andReturns($mockRequest);
+
+        $this->inertia = new InertiaService(
+            $this->environment,
+            $this->requestStack,
+            $this->container,
+            new InertiaFormProcessorService(),
+            $this->serializer
+        );
+
+
+        $factory = Forms::createFormFactoryBuilder()
+            ->addExtensions([new ValidatorExtension(Validation::createValidator())])
+            ->addTypeExtensions([])
+            ->addTypes([])
+            ->addTypeGuessers([])
+            ->getFormFactory();
+
+        $formData = [
+            'username' => 'john_doe',
+        ];
+
+        $form = $factory->create(TestFormType::class);
+        $form->submit($formData);
+
+        $this->assertTrue($form->isSynchronized());
+
+        $response = $this->inertia->render('Dashboard', ['errors' => ['test' => 'test']], forms: [
+            $form
+        ]);
+
+        $this->assertInstanceOf(Response::class, $response);
+        $data = json_decode($response->getContent(), true);
+        $this->assertEquals(['errors' => ['test' => 'test']], $data['props']);
+    }
+
+    public function testFormsValidationShouldNotOverride()
+    {
+        $mockRequest = \Mockery::mock(Request::class);
+        $mockRequest
+            ->shouldReceive('getRequestUri')
+            ->andSet('headers', new HeaderBag(['X-Inertia' => true]));
+        $mockRequest
+            ->allows()
+            ->getRequestUri()
+            ->andReturns('https://example.test');
+        $this->requestStack
+            ->allows()
+            ->getCurrentRequest()
+            ->andReturns($mockRequest);
+
+        $this->inertia = new InertiaService(
+            $this->environment,
+            $this->requestStack,
+            $this->container,
+            new InertiaFormProcessorService(),
+            $this->serializer
+        );
+
+
+        $factory = Forms::createFormFactoryBuilder()
+            ->addExtensions([new ValidatorExtension(Validation::createValidator())])
+            ->addTypeExtensions([])
+            ->addTypes([])
+            ->addTypeGuessers([])
+            ->getFormFactory();
+
+        $formData = [];
+
+        $form = $factory->create(TestFormType::class);
+        $form->submit($formData);
+        $this->assertTrue($form->isSynchronized());
+
+        $response = $this->inertia->render('Dashboard', [], forms: [
+            $form
+        ]);
+
+        $this->assertInstanceOf(Response::class, $response);
+        $data = json_decode($response->getContent(), true);
+        $this->assertEquals(['errors' => [
+            "test_form" => [
+                "username" => "Your error message"
+            ]
+        ]], $data['props']);
+    }
+
     public function testSharedSingle()
     {
         $this->inertia->share('app_name', 'Testing App 1');
@@ -84,6 +195,7 @@ class InertiaServiceTest extends InertiaBaseConfig
             $this->environment,
             $this->requestStack,
             $this->container,
+            new InertiaFormProcessorService(),
             $this->serializer
         );
 
@@ -110,6 +222,7 @@ class InertiaServiceTest extends InertiaBaseConfig
             $this->environment,
             $this->requestStack,
             $this->container,
+            new InertiaFormProcessorService(),
             $this->serializer
         );
 
@@ -137,6 +250,7 @@ class InertiaServiceTest extends InertiaBaseConfig
             $this->environment,
             $this->requestStack,
             $this->container,
+            new InertiaFormProcessorService(),
             $this->serializer
         );
         $this->inertia->share('app_name', 'Testing App 3');
@@ -178,6 +292,7 @@ class InertiaServiceTest extends InertiaBaseConfig
             $this->environment,
             $this->requestStack,
             $this->container,
+            new InertiaFormProcessorService(),
             $this->serializer
         );
 
@@ -218,6 +333,7 @@ class InertiaServiceTest extends InertiaBaseConfig
             $this->environment,
             $this->requestStack,
             $this->container,
+            new InertiaFormProcessorService(),
             $this->serializer
         );
 
@@ -296,6 +412,7 @@ class InertiaServiceTest extends InertiaBaseConfig
             $this->environment,
             $this->requestStack,
             $this->container,
+            new InertiaFormProcessorService(),
             $this->serializer
         );
 
@@ -330,6 +447,7 @@ class InertiaServiceTest extends InertiaBaseConfig
             $this->environment,
             $this->requestStack,
             $this->container,
+            new InertiaFormProcessorService(),
             $this->serializer
         );
 
@@ -361,7 +479,7 @@ class InertiaServiceTest extends InertiaBaseConfig
 
         $response = $this->inertia->render('Dashboard', $props);
         $data = json_decode($response->getContent(), false);
-        $responseProps = (array) $data->props;
+        $responseProps = (array)$data->props;
 
         $this->assertIsInt($responseProps['integer']);
         $this->assertIsFloat($responseProps['float']);

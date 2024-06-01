@@ -6,9 +6,14 @@ services:
       $engine: '@twig'
       $requestStack: '@request_stack'
       $container: '@service_container'
+      $inertiaFormProcessorService: '@rompetomp_inertia.inertia_form_processor'
       $serializer: '@serializer'
 
   Rompetomp\InertiaBundle\Architecture\InertiaInterface: '@rompetomp_inertia.inertia'
+
+  rompetomp_inertia.inertia_form_processor:
+    class: Rompetomp\InertiaBundle\Service\InertiaFormProcessorService
+    public: false
 
   rompetomp_inertia.inertia_error_response:
     class: Rompetomp\InertiaBundle\Architecture\DefaultInertiaErrorResponse

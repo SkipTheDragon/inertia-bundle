@@ -42,6 +42,7 @@ class InertiaService implements InertiaInterface
         protected Environment $engine,
         protected RequestStack $requestStack,
         private ContainerInterface $container,
+        protected InertiaFormProcessorService $inertiaFormProcessorService,
         protected ?SerializerInterface $serializer = null
     ) {
         /**
@@ -247,6 +248,16 @@ class InertiaService implements InertiaInterface
         if ($this->rootView === null) {
             throw new RuntimeError(
                 'The root view is not set. Inertia bundle requires a root view to render the page, set one globally in config/packages/inertia.yaml or pass it to the render method.'
+            );
+        }
+
+        /**
+         * Process forms only if the errors key is not passed directly from props.
+         * In case the errors key is passed directly from props, we assume that the form is already processed.
+         */
+        if (!isset($props['errors']) && count($forms) > 0) {
+            $props['errors'] = $this->inertiaFormProcessorService->processForms(
+                $forms
             );
         }
 
