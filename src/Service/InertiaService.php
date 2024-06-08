@@ -6,6 +6,7 @@ use Closure;
 use Rompetomp\InertiaBundle\Architecture\InertiaInterface;
 use Rompetomp\InertiaBundle\Architecture\LazyProp;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -41,6 +42,7 @@ class InertiaService implements InertiaInterface
         protected Environment $engine,
         protected RequestStack $requestStack,
         private ContainerInterface $container,
+        protected InertiaFormProcessorService $inertiaFormProcessorService,
         protected ?SerializerInterface $serializer = null
     ) {
         /**
@@ -226,6 +228,7 @@ class InertiaService implements InertiaInterface
      * @param array $viewData The view data to pass to the root view (ak. your twig template).
      * @param array $context The context to pass to the serializer.
      * @param string|null $url The URL to pass to the page.
+     * @param array<FormInterface>|null $forms
      * @return Response
      * @throws LoaderError
      * @throws RuntimeError
@@ -236,7 +239,8 @@ class InertiaService implements InertiaInterface
         array $props = [],
         array $viewData = [],
         array $context = [],
-        ?string $url = null
+        ?string $url = null,
+        ?array $forms = []
     ): Response {
         /**
          * If the root view is not set, throw an exception.
@@ -244,6 +248,16 @@ class InertiaService implements InertiaInterface
         if ($this->rootView === null) {
             throw new RuntimeError(
                 'The root view is not set. Inertia bundle requires a root view to render the page, set one globally in config/packages/inertia.yaml or pass it to the render method.'
+            );
+        }
+
+        /**
+         * Process forms only if the errors key is not passed directly from props.
+         * In case the errors key is passed directly from props, we assume that the form is already processed.
+         */
+        if (!isset($props['errors']) && count($forms) > 0) {
+            $props['errors'] = $this->inertiaFormProcessorService->processForms(
+                $forms
             );
         }
 
@@ -367,7 +381,7 @@ class InertiaService implements InertiaInterface
          * If the callback is an array, we check if the first element is a service in the container. If it is, we return a LazyProp with the service.
          */
         if (is_array($callback)) {
-            [$name, $action] = array_pad($callback, 2, null);
+            list($name, $action) = array_pad($callback, 2, null);
             $useContainer = is_string($name) && $this->container->has($name);
             /**
              * A service is found in the container and an action is provided, we return a LazyProp with the service and the action.
