@@ -86,8 +86,9 @@ class InertiaListener
      */
     public function onKernelResponse(ResponseEvent $event): void
     {
+        $route = $event->getRequest()->attributes->get('_route');
         // Ignore requests to internal Symfony routes/Profiler
-        if (str_starts_with($event->getRequest()->attributes->get('_route'), '_')) {
+        if (is_string($route) && str_starts_with($route, '_')) {
             return;
         }
         /**
