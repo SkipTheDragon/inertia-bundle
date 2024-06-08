@@ -86,11 +86,19 @@ class InertiaListener
      */
     public function onKernelResponse(ResponseEvent $event): void
     {
+        // Ignore requests to internal Symfony routes/Profiler
+        if (str_starts_with($event->getRequest()->attributes->get('_route'), '_')) {
+            return;
+        }
         /**
          * If the CSRF protection is enabled, we need to refresh the CSRF token.
          * We add this cookie to any request, not just Inertia requests.
          */
-        if ($this->container->getParameter('inertia.csrf.enabled')) {
+        if (
+            $this->container->getParameter('inertia.csrf.enabled') &&
+            $event->isMainRequest() && // Only set the cookie on the main request
+            !$event->getResponse()->isRedirect() // Don't set the cookie on redirect responses
+        ) {
             $event
                 ->getResponse()
                 ->headers->setCookie(
