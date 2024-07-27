@@ -14,9 +14,6 @@ final class InvalidCSRFErrorResponse implements
 {
     public function getResponse(): Response
     {
-        return new Response(
-            'Invalid CSRF token.',
-            Response::HTTP_FORBIDDEN
-        );
+        return new Response('Invalid CSRF token.', Response::HTTP_FORBIDDEN);
     }
 }
