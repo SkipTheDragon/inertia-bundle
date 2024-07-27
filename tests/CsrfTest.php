@@ -39,7 +39,7 @@ class CsrfTest extends InertiaBaseConfig
 
         $listener->onKernelRequest($event);
         $this->assertEquals(
-            'Something went wrong with Inertia!',
+            'Invalid CSRF token.',
             $event->getResponse()->getContent()
         );
     }
