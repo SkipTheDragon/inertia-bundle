@@ -66,7 +66,7 @@ final class MyCustomInertiaErrorResponse implements
 {
   public function getResponse(): Response
   {
-    return new Response('Something went wrong with Inertia!', 403);
+    return new Response('Something went wrong with Inertia!', 400);
   }
 }
 ```

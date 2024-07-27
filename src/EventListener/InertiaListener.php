@@ -4,6 +4,7 @@ namespace Rompetomp\InertiaBundle\EventListener;
 
 use Rompetomp\InertiaBundle\Architecture\DefaultInertiaErrorResponseInterface;
 use Rompetomp\InertiaBundle\Architecture\InertiaInterface;
+use Rompetomp\InertiaBundle\Architecture\InvalidCSRFErrorResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,7 +59,7 @@ class InertiaListener
                 )
             ) {
                 $event->setResponse(
-                    $this->defaultInertiaErrorResponse->getResponse()
+                    (new InvalidCSRFErrorResponse())->getResponse()
                 );
                 return;
             }

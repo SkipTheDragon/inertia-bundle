@@ -5,18 +5,18 @@ namespace Rompetomp\InertiaBundle\Architecture;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Provides a default response for Inertia Requests.
+ * Provides a invalid CSRF response for Inertia Requests.
  *
  * @author  Tudorache Leonard Valentin <tudorache.leonard@wyverr.com>
  */
-final class DefaultInertiaErrorResponse implements
+final class InvalidCSRFErrorResponse implements
     DefaultInertiaErrorResponseInterface
 {
     public function getResponse(): Response
     {
         return new Response(
-            'Something went wrong with Inertia!',
-            Response::HTTP_BAD_REQUEST
+            'Invalid CSRF token.',
+            Response::HTTP_FORBIDDEN
         );
     }
 }
