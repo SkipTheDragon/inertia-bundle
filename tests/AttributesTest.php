@@ -4,6 +4,7 @@ namespace Rompetomp\InertiaBundle\Tests;
 
 use Rompetomp\InertiaBundle\Architecture\InertiaResponse;
 use Rompetomp\InertiaBundle\EventListener\InertiaResponseAttributeListener;
+use Rompetomp\InertiaBundle\Service\InertiaFormProcessorService;
 use Rompetomp\InertiaBundle\Service\InertiaService;
 use Rompetomp\InertiaBundle\Tests\Fixtures\InertiaBaseConfig;
 use Symfony\Component\HttpFoundation\HeaderBag;
@@ -39,6 +40,7 @@ class AttributesTest extends InertiaBaseConfig
                 $this->environment,
                 $this->requestStack,
                 $this->container,
+                new InertiaFormProcessorService(),
                 $this->serializer
             )
         );
