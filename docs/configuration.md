@@ -1,6 +1,6 @@
 ## Setup root template
 
-The first step to using Inertia is creating a root template. We recommend using `app.html.twig`. This template should
+The first step to using Inertia is creating a root template. We recommend using `base.html.twig`. This template should
 include your assets, as well as the `inertia(page)` and `inertiaHead(page)` functions
 
 ```html
