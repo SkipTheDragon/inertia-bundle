@@ -7,6 +7,7 @@ use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use Rompetomp\InertiaBundle\DependencyInjection\InertiaExtension;
 use Rompetomp\InertiaBundle\InertiaBundle;
+use Rompetomp\InertiaBundle\Service\InertiaFormProcessorService;
 use Rompetomp\InertiaBundle\Service\InertiaService;
 use Symfony\Bundle\FrameworkBundle\DependencyInjection\FrameworkExtension;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
@@ -51,6 +52,7 @@ class InertiaBaseConfig extends TestCase
             $this->environment,
             $this->requestStack,
             $container,
+            new InertiaFormProcessorService(),
             $this->serializer
         );
     }
