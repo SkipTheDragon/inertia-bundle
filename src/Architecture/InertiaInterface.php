@@ -30,7 +30,7 @@ interface InertiaInterface
      * @param string|null $key
      * @return mixed
      */
-    public function getShared(string $key = null): mixed;
+    public function getShared(?string $key = null): mixed;
 
     /**
      * Set additional view data for the templating system.
@@ -45,7 +45,7 @@ interface InertiaInterface
      * @param string|null $key
      * @return mixed
      */
-    public function getViewData(string $key = null): mixed;
+    public function getViewData(?string $key = null): mixed;
 
     /**
      * Set the version of the application.
@@ -65,7 +65,7 @@ interface InertiaInterface
      * @param string|null $key
      * @return mixed
      */
-    public function getContext(string $key = null): mixed;
+    public function getContext(?string $key = null): mixed;
 
     /**
      * Get the version of the application.

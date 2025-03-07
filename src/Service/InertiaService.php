@@ -80,7 +80,7 @@ class InertiaService implements InertiaInterface
      * @param string|null $key
      * @return mixed
      */
-    public function getShared(string $key = null): mixed
+    public function getShared(?string $key = null): mixed
     {
         if ($key) {
             return $this->sharedProps[$key] ?? null;
@@ -107,7 +107,7 @@ class InertiaService implements InertiaInterface
      * @param string|null $key
      * @return mixed
      */
-    public function getViewData(string $key = null): mixed
+    public function getViewData(?string $key = null): mixed
     {
         if ($key) {
             return $this->sharedViewData[$key] ?? null;
@@ -133,7 +133,7 @@ class InertiaService implements InertiaInterface
      * @param string|null $key
      * @return mixed
      */
-    public function getContext(string $key = null): mixed
+    public function getContext(?string $key = null): mixed
     {
         if ($key) {
             return $this->sharedContext[$key] ?? null;
